@@ -13,6 +13,7 @@ docker run -d -v $(pwd):/rethinkdb/backups -e RETHINKDB_HOST=<rethinkdb-host>[:<
 
 - RETHINKDB_HOST  can be `rethinkdb` or `rethinkdb:28015`
 - CRON_TIME       `0 0 * * 0` by default, which is every sunday at 00:00.
+- RETHINKDB_PASS    admin's password, in Rancher use Secrets (as name `passwd`) instead of environment. 
 
 ### About crontab
 > For details see man crontabs, Example of job definition:
