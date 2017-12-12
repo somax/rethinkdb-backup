@@ -4,7 +4,7 @@ cat <<EOF > /backup.sh
 #!/bin/sh
 echo "Start backup..."
 
-BACKUP_CMD="rethinkdb-dump -c $RETHINKDB_HOST"
+BACKUP_CMD="rethinkdb-dump -c $RETHINKDB_HOST --password-file /passwd"
 
 echo "=> Backup started..."
 
@@ -39,6 +39,9 @@ crond -f
 EOF
 
 chmod +x /run.sh
+
+
+echo $RETHINKDB_PASS > /passwd
 
 set -e
 exec "$@"
