@@ -4,7 +4,7 @@ cat <<EOF > /backup.sh
 #!/bin/sh
 echo "Start backup..."
 
-BACKUP_CMD="rethinkdb-dump -c $RETHINKDB_HOST --password-file /passwd"
+BACKUP_CMD="rethinkdb-dump -c $RETHINKDB_HOST --password-file /passwd -f /rethinkdb/backups/rdb_dump_\$(date +\%Y-\%m-\%dT\%H:\%M:\%S).tar.gz"
 
 echo "=> Backup started..."
 
