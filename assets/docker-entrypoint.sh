@@ -1,10 +1,19 @@
 #!/bin/sh
 
+# 在 rancher 中部署，优先考虑使用 secrets 存储密码
+PASSWD="/passwd"
+if [ -e /run/secrets/passwd ]; then
+   PASSWD="/run/secrets/passwd"
+elif [  -n "$RETHINKDB_PASS" ]; then
+    echo $RETHINKDB_PASS > /passwd
+fi
+
+# 生成 备份 脚本
 cat <<EOF > /backup.sh
 #!/bin/sh
 echo "Start backup..."
 
-BACKUP_CMD="rethinkdb-dump -c $RETHINKDB_HOST --password-file /passwd -f /rethinkdb/backups/rdb_dump_\$(date +\%Y-\%m-\%dT\%H:\%M:\%S).tar.gz"
+BACKUP_CMD="rethinkdb-dump -c $RETHINKDB_HOST --password-file $PASSWD -f /rethinkdb/backups/rdb_dump_\$(date +\%Y-\%m-\%dT\%H:\%M:\%S).tar.gz"
 
 echo "=> Backup started..."
 
@@ -18,6 +27,8 @@ EOF
 
 chmod +x /backup.sh
 
+
+# 生成 计划任务启动 脚本
 cat <<EOF > /run.sh
 #!/bin/sh
 
@@ -40,8 +51,6 @@ EOF
 
 chmod +x /run.sh
 
-
-echo $RETHINKDB_PASS > /passwd
-
+# 入口定义
 set -e
 exec "$@"
